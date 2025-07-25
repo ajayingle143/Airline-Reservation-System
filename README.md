@@ -79,3 +79,19 @@ Tracks seat allocation and availability.
 ```sql
 SELECT * FROM Flights
 WHERE source = 'Mumbai' AND destination = 'Delhi';
+SELECT seat_number FROM Seats
+WHERE flight_id = 1 AND is_booked = FALSE;
+CREATE VIEW Available_Seats_View AS
+SELECT f.flight_id, airline_name, source, destination,
+       COUNT(seat_id) AS available_seats
+FROM Flights f
+JOIN Seats s ON f.flight_id = s.flight_id
+WHERE s.is_booked = FALSE
+GROUP BY f.flight_id;
+
+SELECT b.booking_id, c.full_name, f.airline_name, f.source, f.destination,
+       f.departure_time, b.status, s.seat_number
+FROM Bookings b
+JOIN Customers c ON b.customer_id = c.customer_id
+JOIN Flights f ON b.flight_id = f.flight_id
+LEFT JOIN Seats s ON b.booking_id = s.booking_id;
